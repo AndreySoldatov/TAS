@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include <Iterator.hpp>
 #include <initializer_list>
 #include <stdexcept>
 
@@ -117,30 +118,26 @@ public:
         return size();
     }
 
-    //FIXME: CHANGE TO TAS::Iterator
-    T *begin() {
+    Iterator<T> begin() {
         return m_data;
     }
 
-    //FIXME: CHANGE TO TAS::Iterator
-    const T *cbegin() const {
+    const Iterator<T> cbegin() const {
         return m_data;
     }
 
-    //FIXME: CHANGE TO TAS::Iterator
-    T *end() {
+    Iterator<T> end() {
         return m_data + Size;
     }
 
-    //FIXME: CHANGE TO TAS::Iterator
-    const T *cend() const {
+    const Iterator<T> cend() const {
         return m_data + Size;
     }
 
     //FIXME: IMPLEMENT REVERSE ITERATORS (rbegin(), rend(), crbegin(), crend())
 };
 
-} // namespace TAS
+}
 
 
 
