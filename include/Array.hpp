@@ -15,7 +15,6 @@
 #include <stdexcept>
 #include <functional>
 
-//TODO: add TAS::ReverseIterator
 //TODO: change std::function with TAS::Function
 
 namespace TAS
@@ -52,8 +51,7 @@ public:
      * @param val 
      */
     Array(std::initializer_list<T>const &val) {
-        //FIXME: more delightful message pls
-        if(val.size() != Size) throw std::out_of_range("Args");
+        if(val.size() != Size) throw std::out_of_range("Miscount of arguments");
         std::copy(val.begin(), val.begin() + Size, m_data);
     }
 
@@ -137,6 +135,14 @@ public:
     }
 
     const T &back() const {
+        return m_data[Size - 1];
+    }
+
+    T &front() {
+        return m_data[0];
+    }
+
+    T &back() {
         return m_data[Size - 1];
     }
 
@@ -253,7 +259,7 @@ public:
      * 
      * @param f 
      */
-    void transformAndCopyWithIndex(std::function<T(T const &, size_t)> const &f) {
+    void transformAndCopyWithIndex(std::function<T([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) {
         size_t ind{};
         for (ArrayIterator i = begin(); i < end(); i++)
         {
@@ -270,7 +276,6 @@ public:
         return true;
     }
 
-    //TODO: IMPLEMENT REVERSE ITERATORS (rbegin(), rend(), crbegin(), crend())
 };
 
 
