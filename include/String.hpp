@@ -345,6 +345,10 @@ public:
     }
 };
 
+//TYPEDEFS
+typedef BasicString<char, 32> String;
+//TYPEDEFS
+
 template<typename CharType>
 size_t cStringLength(CharType const *str) {
     size_t count{};
