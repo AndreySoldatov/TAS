@@ -35,8 +35,6 @@ template<typename T>
 class ConstReverseArrayIterator;
 //Forwards
 
-typedef long unsigned int size_t;
-
 /**
  * @brief constant sized Array of orbitrary type
  * 
@@ -191,7 +189,7 @@ public:
      * 
      * @param f 
      */
-    void forEach(std::function<void(T const &)> const &f) const {
+    void forEach(std::function<void([[maybe_unused]] T const &)> const &f) const {
         for (ConstArrayIterator i = cbegin(); i < cend(); i++)
         {
             f(*i);
@@ -203,7 +201,7 @@ public:
      * 
      * @param f 
      */
-    void transformReference(std::function<void(T &)> const &f) {
+    void transformReference(std::function<void([[maybe_unused]] T &)> const &f) {
         for (ArrayIterator i = begin(); i < end(); i++)
         {
             f(*i);
@@ -215,12 +213,54 @@ public:
      * 
      * @param f 
      */
-    void transformAndCopy(std::function<T(T const &)> const &f) {
+    void transformAndCopy(std::function<T([[maybe_unused]] T const &)> const &f) {
         for (ArrayIterator i = begin(); i < end(); i++)
         {
             *i = f(*i);
         }
     }
+
+
+    /**
+     * @brief Applies Lambda that is not modifying the array
+     * 
+     * @param f 
+     */
+    void forEachWithIndex(std::function<void([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) const {
+        size_t ind{};
+        for (ConstArrayIterator i = cbegin(); i < cend(); i++)
+        {
+            f(*i, ind);
+            ind++;
+        }
+    }
+
+    /**
+     * @brief Applies Lambda that is modifying the referce to the array element
+     * 
+     * @param f 
+     */
+    void transformReferenceWithIndex(std::function<void([[maybe_unused]] T &, [[maybe_unused]] size_t)> const &f) {
+        size_t ind{};
+        for (ArrayIterator i = begin(); i < end(); i++)
+        {
+            f(*i, ind);
+        }
+    }
+
+    /**
+     * @brief Applies Lambda that returns copy of modified element
+     * 
+     * @param f 
+     */
+    void transformAndCopyWithIndex(std::function<T(T const &, size_t)> const &f) {
+        size_t ind{};
+        for (ArrayIterator i = begin(); i < end(); i++)
+        {
+            *i = f(*i, ind);
+        }
+    }
+
 
     bool operator==(Array<T, Size> const &rhs) const {
         for (size_t i = 0; i < Size; i++)
