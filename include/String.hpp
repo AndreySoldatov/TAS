@@ -70,6 +70,14 @@ public:
         memoryCopy(m_data, str.m_data, m_size);
     }
 
+    BasicString(std::string const &str)
+    {
+        m_size = str.length();
+        m_capacity = m_size + (BlockSize - m_size % BlockSize);
+        m_data = new CharType[m_capacity]{};
+        memoryCopy(m_data, str.c_str(), m_size);
+    }
+
     ~BasicString() {
         delete[] m_data;
     }
@@ -237,7 +245,14 @@ public:
         return *this;
     }
 
-    //TODO: Maybe implement smth like shrink_to_fit
+    BasicString &shrinkToFit() {
+        m_capacity = m_size;
+        CharType *tmpStr = new CharType[m_size];
+        memoryCopy(tmpStr, m_data, m_size);
+        delete[] m_data;
+        m_data = tmpStr;
+        return *this;
+    }
 
     BasicString &clear() {
         if(m_size > 0) {
@@ -313,19 +328,23 @@ public:
         return *this;
     }
 
-    BasicString operator+(CharType const &chr) {
+    BasicString operator+(CharType const &chr) const {
         BasicString res{*this};
         return res.append(chr);
     }
 
-    BasicString operator+(BasicString const &str) {
+    BasicString operator+(BasicString const &str) const {
         BasicString res{*this};
         return res.append(str);
     }
 
+    BasicString operator+=(BasicString const &str) {
+        return append(str);
+    }
+
     //TODO: implement with TAS::StringIterator
-    BasicString span(size_t first, size_t last = BasicString::nPos) {
-        if(last < first) throw std::runtime_error("Ay ay, last < first");
+    BasicString span(size_t first, size_t last = BasicString::nPos) const {
+        if(last < first) return {};
         else if(last == first) {
             return {};
         }
@@ -340,8 +359,136 @@ public:
     }
 
     //TODO: implement with TAS::StringIterator
-    BasicString subString(size_t first, size_t n = 1) {
+    BasicString subString(size_t first, size_t n = 1) const {
         return span(first, first + n);
+    }
+
+    //TODO: implement with TAS::StringIterator
+    bool startsWith(BasicString const &str) const {
+        for (size_t i = 0; i < str.size(); i++)
+        {
+            if(m_data[i] != str[i]) return false;    
+        }
+        return true;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    bool endsWith(BasicString const &str) const {
+        for (size_t i = 0; i < str.size(); i++)
+        {
+            if(m_data[(m_size - str.size()) + i] != str[i]) return false;    
+        }
+        return true;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    bool contains(BasicString const &str) const {
+        for (size_t i = 0; i < m_size - str.size() + 1; i++)
+        {
+            bool res = true;
+            for (size_t j = 0; j < str.size(); j++)
+            {
+                if(m_data[i + j] != str[j]) res = false;
+            }
+            if(res) return true;
+        }
+        return false;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    BasicString &replaceSpan(BasicString const &str, size_t first, size_t last = BasicString::nPos) {
+        assign(span(0, first) + str + span(last));
+        return *this;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    BasicString &replaceSubString(BasicString const &str, size_t first, size_t n = 1) {
+        assign(span(0, first) + str + span(first + n));
+        return *this;
+    }
+
+    //TODO: Maybe implement smth like std::copy();
+
+    /**
+     * @brief WARNING: if I were you, I would not use this yet
+     * 
+     * @param newSize 
+     * @return BasicString&
+     */
+    BasicString &resize(size_t newSize, CharType const &fill = {}) {
+        if(newSize > m_size) {
+            reserve(newSize + (BlockSize - newSize % BlockSize));
+            for (size_t i = m_size; i < newSize; i++)
+            {
+                m_data[i] = fill;
+            }
+        } else {
+            for (size_t i = newSize; i < m_size; i++)
+            {
+                m_data[i] = {};
+            }
+        }
+        m_size = newSize;
+        return *this;
+    }
+
+    BasicString &swap(BasicString &other) {
+        std::swap(m_size, other.m_size);
+        std::swap(m_capacity, other.m_capacity);
+        std::swap(m_data, other.m_data);
+        return *this;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    size_t findFirst(BasicString const &str) {
+        for (size_t i = 0; i < m_size - str.size() + 1; i++)
+        {
+            bool res = true;
+            for (size_t j = 0; j < str.size(); j++)
+            {
+                if(m_data[i + j] != str[j]) res = false;
+            }
+            if(res) return i;
+        }
+        return BasicString::nPos;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    size_t findLast(BasicString const &str) {
+        for (size_t i = m_size - str.size(); i >= 0 ; i--)
+        {
+            bool res = true;
+            for (size_t j = 0; j < str.size(); j++)
+            {
+                if(m_data[i + j] != str[j]) res = false;
+            }
+            if(res) return i;
+        }
+        return BasicString::nPos;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    size_t findFirstOf(BasicString const &str) {
+        for (size_t i = 0; i < m_size; i++)
+        {
+            for (size_t j = 0; j < str.size(); j++)
+            {
+                if(m_data[i] == str[j]) return i;
+            }
+        }
+        return BasicString::nPos;
+    }
+
+    //TODO: implement with TAS::StringIterator
+    size_t findLastOf(BasicString const &str) {
+        for (size_t i = m_size - 1; i >= 0; i--)
+        {
+            for (size_t j = 0; j < str.size(); j++)
+            {
+                if(m_data[i] == str[j]) return i;
+            }
+        }
+        return BasicString::nPos;
     }
 };
 
