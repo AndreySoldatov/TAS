@@ -11,7 +11,7 @@ int main() {
     Array<String, 4> arr{"Hello", "World", "and", "Github"};
 
     arr.forEach([](String const &str) {
-        std::cout << str << "\n";
+        std::cout << str.span(str.size(), 0) << "\n";
     });
     
     return 0;
