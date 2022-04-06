@@ -440,7 +440,7 @@ public:
     }
 
     //TODO: implement with TAS::StringIterator
-    size_t findFirst(BasicString const &str) {
+    size_t findFirst(BasicString const &str) const {
         for (size_t i = 0; i < m_size - str.size() + 1; i++)
         {
             bool res = true;
@@ -454,7 +454,7 @@ public:
     }
 
     //TODO: implement with TAS::StringIterator
-    size_t findLast(BasicString const &str) {
+    size_t findLast(BasicString const &str) const {
         for (size_t i = m_size - str.size(); i >= 0 ; i--)
         {
             bool res = true;
@@ -468,7 +468,7 @@ public:
     }
 
     //TODO: implement with TAS::StringIterator
-    size_t findFirstOf(BasicString const &str) {
+    size_t findFirstOf(BasicString const &str) const {
         for (size_t i = 0; i < m_size; i++)
         {
             for (size_t j = 0; j < str.size(); j++)
@@ -480,7 +480,7 @@ public:
     }
 
     //TODO: implement with TAS::StringIterator
-    size_t findLastOf(BasicString const &str) {
+    size_t findLastOf(BasicString const &str) const {
         for (size_t i = m_size - 1; i >= 0; i--)
         {
             for (size_t j = 0; j < str.size(); j++)
