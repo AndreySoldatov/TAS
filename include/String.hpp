@@ -9,6 +9,8 @@
  * 
  */
 
+#pragma once
+
 //#define DEBUG
 
 #ifdef DEBUG
@@ -570,7 +572,7 @@ public:
     BasicString span(size_t first, size_t last = BasicString::nPos) const {
         if(last < first) {
             BasicString res;
-            for (ConstReverseStringIterator i = cbegin() + first - 1; i <= cbegin() + last; i++)
+            for (ConstReverseStringIterator<CharType> i = cbegin() + first - 1; i <= cbegin() + last; i++)
             {
                 res.append(*i);
             }
@@ -581,7 +583,7 @@ public:
         }
         else {
             BasicString res;
-            for (ConstStringIterator i = cbegin() + first; i < (last >= m_size ? cend() : cbegin() + last); i++)
+            for (ConstStringIterator<CharType> i = cbegin() + first; i < (last >= m_size ? cend() : cbegin() + last); i++)
             {
                 res.append(*i);
             }
@@ -628,6 +630,18 @@ public:
             if(res) return true;
         }
         return false;
+    }
+
+    bool operator==(BasicString const &rhs) const {
+        return (m_size == rhs.size()) && contains(rhs);
+    }
+
+    bool operator!=(BasicString const &rhs) const {
+        return !(*this == rhs);
+    }
+
+    bool equals(BasicString const &rhs) const {
+        return (m_size == rhs.size()) && contains(rhs);
     }
 
     /**
