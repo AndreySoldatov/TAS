@@ -1331,4 +1331,9 @@ std::ostream &operator<<(std::ostream &os, BasicString<CharType, BlockSize> cons
     return os << str.cString();
 }
 
+template<typename CharType, size_t BlockSize>
+std::istream &operator>>(std::istream &is, BasicString<CharType, BlockSize> &str) {
+    return is >> str.data();
+}
+
 }
