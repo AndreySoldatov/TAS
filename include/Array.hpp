@@ -73,7 +73,7 @@ public:
      * @param val 
      */
     void fill(T const &val) {
-        for (ArrayIterator i = begin(); i < end(); i++)
+        for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = val;
         }
@@ -196,7 +196,7 @@ public:
      * @param f 
      */
     void forEach(std::function<void([[maybe_unused]] T const &)> const &f) const {
-        for (ConstArrayIterator i = cbegin(); i < cend(); i++)
+        for (ConstArrayIterator<T> i = cbegin(); i < cend(); i++)
         {
             f(*i);
         }
@@ -208,7 +208,7 @@ public:
      * @param f 
      */
     void transformReference(std::function<void([[maybe_unused]] T &)> const &f) {
-        for (ArrayIterator i = begin(); i < end(); i++)
+        for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             f(*i);
         }
@@ -220,7 +220,7 @@ public:
      * @param f 
      */
     void transformAndCopy(std::function<T([[maybe_unused]] T const &)> const &f) {
-        for (ArrayIterator i = begin(); i < end(); i++)
+        for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = f(*i);
         }
@@ -234,7 +234,7 @@ public:
      */
     void forEachWithIndex(std::function<void([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) const {
         size_t ind{};
-        for (ConstArrayIterator i = cbegin(); i < cend(); i++)
+        for (ConstArrayIterator<T> i = cbegin(); i < cend(); i++)
         {
             f(*i, ind);
             ind++;
@@ -248,7 +248,7 @@ public:
      */
     void transformReferenceWithIndex(std::function<void([[maybe_unused]] T &, [[maybe_unused]] size_t)> const &f) {
         size_t ind{};
-        for (ArrayIterator i = begin(); i < end(); i++)
+        for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             f(*i, ind);
         }
@@ -261,7 +261,7 @@ public:
      */
     void transformAndCopyWithIndex(std::function<T([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) {
         size_t ind{};
-        for (ArrayIterator i = begin(); i < end(); i++)
+        for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = f(*i, ind);
         }

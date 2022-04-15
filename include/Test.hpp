@@ -11,6 +11,10 @@
 
 #pragma once
 
+#include <iostream>
+
+//TODO: Change std::cout to  TAS::print or smth
+
 namespace TAS
 {
 
@@ -21,37 +25,55 @@ unsigned long int test_failed = 0; \
 
 #ifdef TEST_INIT
 
+#ifdef _WIN32
+    #include <windows.h>
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    #define SET_RED SetConsoleTextAttribute(hConsole, 12);
+    #define SET_GREEN SetConsoleTextAttribute(hConsole, 10);
+    #define SET_WHITE SetConsoleTextAttribute(hConsole, 15);
+#elif __unix__
+#endif
+
 #define ASSERT(boolean_value) \
     if(boolean_value) { \
+        SET_GREEN \
         std::cout << "[V] Test_" << test_count << ": \"" << #boolean_value << "\" Passed!\n"; \
         test_passed++; \
     } \
     else { \
+        SET_RED \
         std::cout << "[X] Test_" << test_count << ": \"" << #boolean_value << "\" Failed!\n"; \
         test_failed++; \
     } \
+    SET_WHITE \
     test_count++; \
 
 #define ASSERT_EQ(val1, val2) \
     if(val1 == val2) { \
+        SET_GREEN \
         std::cout << "[V] Test_" << test_count << ": \"" << #val1 << " == " << #val2 << "\" Passed!\n"; \
         test_passed++; \
     } \
     else { \
+        SET_RED \
         std::cout << "[X] Test_" << test_count << ": \"" << #val1 << " == " << #val2 << "\" Failed!\n"; \
         test_failed++; \
     } \
+    SET_WHITE \
     test_count++; \
 
 #define ASSERT_NOT_EQ(val1, val2) \
     if(val1 != val2) { \
+        SET_GREEN \
         std::cout << "[V] Test_" << test_count << ": \"" << #val1 << " != " << #val2 << "\" Passed!\n"; \
         test_passed++; \
     } \
     else { \
+        SET_RED \
         std::cout << "[X] Test_" << test_count << ": \"" << #val1 << " != " << #val2 << "\" Failed!\n"; \
         test_failed++; \
     } \
+    SET_WHITE \
     test_count++; \
 
 #define TEST_END \

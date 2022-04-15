@@ -90,6 +90,17 @@ public:
         if(type_info() != typeid(Type)) throw std::bad_cast();
         return static_cast<Holder<Type> *>(m_content)->m_held; 
     }
+
+    template<typename Type>
+    bool operator==(Type const &val) {
+        if(type_info() != typeid(Type)) throw std::bad_cast();
+        return (static_cast<Holder<Type> *>(m_content)->m_held == val); 
+    }
+
+    template<typename Type>
+    bool operator!=(Type const &val) {
+        return !(*this == val); 
+    }
 };
 
 }
