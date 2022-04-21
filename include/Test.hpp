@@ -15,16 +15,6 @@
 
 //TODO: Change std::cout to  TAS::print or smth
 
-namespace TAS
-{
-
-#define TEST_INIT \
-unsigned long int test_count = 0; \
-unsigned long int test_passed = 0; \
-unsigned long int test_failed = 0; \
-
-#ifdef TEST_INIT
-
 #ifdef _WIN32
     #include <windows.h>
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -32,7 +22,24 @@ unsigned long int test_failed = 0; \
     #define SET_GREEN SetConsoleTextAttribute(hConsole, 10);
     #define SET_WHITE SetConsoleTextAttribute(hConsole, 15);
 #elif __unix__
+//TODO: Make unix vesion
 #endif
+
+unsigned long int test_count = 0; 
+unsigned long int test_passed = 0; 
+unsigned long int test_failed = 0; 
+
+#define TEST_INIT(Name) \
+test_count = 0; \
+test_passed = 0; \
+test_failed = 0; \
+std::cout << "\nInitializing test suite \"" << #Name << "\"\n\n";
+
+#define ANON_TEST_INIT \
+test_count = 0; \
+test_passed = 0; \
+test_failed = 0; \
+std::cout << "\nInitializing anonymous test suite\n\n";
 
 #define ASSERT(boolean_value) \
     if(boolean_value) { \
@@ -46,7 +53,7 @@ unsigned long int test_failed = 0; \
         test_failed++; \
     } \
     SET_WHITE \
-    test_count++; \
+    test_count++;
 
 #define ASSERT_EQ(val1, val2) \
     if(val1 == val2) { \
@@ -60,7 +67,7 @@ unsigned long int test_failed = 0; \
         test_failed++; \
     } \
     SET_WHITE \
-    test_count++; \
+    test_count++;
 
 #define ASSERT_NOT_EQ(val1, val2) \
     if(val1 != val2) { \
@@ -74,11 +81,8 @@ unsigned long int test_failed = 0; \
         test_failed++; \
     } \
     SET_WHITE \
-    test_count++; \
+    test_count++;
 
 #define TEST_END \
-    std::cout << "\nFrom " << test_count << " tests\n" << test_passed << " Tests passed\n" << test_failed << " Tests failed\n"; \
-
-#endif
-
-} // namespace TAS
+std::cout << "\nFrom " << test_count << " tests\n" << test_passed \
+<< " Tests passed\n" << test_failed << " Tests failed\n";

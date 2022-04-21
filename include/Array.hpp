@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <Print.hpp>
+
 #include <initializer_list>
 #include <stdexcept>
 #include <functional>
@@ -72,11 +74,12 @@ public:
      * 
      * @param val 
      */
-    void fill(T const &val) {
+    Array &fill(T const &val) {
         for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = val;
         }
+        return *this;
     }
 
     /**
@@ -195,11 +198,12 @@ public:
      * 
      * @param f 
      */
-    void forEach(std::function<void([[maybe_unused]] T const &)> const &f) const {
+    Array const &forEach(std::function<void(T const &)> const &f) const {
         for (ConstArrayIterator<T> i = cbegin(); i < cend(); i++)
         {
             f(*i);
         }
+        return *this;
     }
 
     /**
@@ -207,11 +211,12 @@ public:
      * 
      * @param f 
      */
-    void transformReference(std::function<void([[maybe_unused]] T &)> const &f) {
+    Array &transformReference(std::function<void(T &)> const &f) {
         for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             f(*i);
         }
+        return *this;
     }
 
     /**
@@ -219,11 +224,12 @@ public:
      * 
      * @param f 
      */
-    void transformAndCopy(std::function<T([[maybe_unused]] T const &)> const &f) {
+    Array &transformAndCopy(std::function<T(T const &)> const &f) {
         for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = f(*i);
         }
+        return *this;
     }
 
 
@@ -232,13 +238,14 @@ public:
      * 
      * @param f 
      */
-    void forEachWithIndex(std::function<void([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) const {
+    Array const &forEachWithIndex(std::function<void(T const &, size_t)> const &f) const {
         size_t ind{};
         for (ConstArrayIterator<T> i = cbegin(); i < cend(); i++)
         {
             f(*i, ind);
             ind++;
         }
+        return *this;
     }
 
     /**
@@ -246,12 +253,14 @@ public:
      * 
      * @param f 
      */
-    void transformReferenceWithIndex(std::function<void([[maybe_unused]] T &, [[maybe_unused]] size_t)> const &f) {
+    Array &transformReferenceWithIndex(std::function<void(T &, size_t)> const &f) {
         size_t ind{};
         for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             f(*i, ind);
+            ind++;
         }
+        return *this;
     }
 
     /**
@@ -259,12 +268,14 @@ public:
      * 
      * @param f 
      */
-    void transformAndCopyWithIndex(std::function<T([[maybe_unused]] T const &, [[maybe_unused]] size_t)> const &f) {
+    Array &transformAndCopyWithIndex(std::function<T(T const &, size_t)> const &f) {
         size_t ind{};
         for (ArrayIterator<T> i = begin(); i < end(); i++)
         {
             *i = f(*i, ind);
+            ind++;
         }
+        return *this;
     }
 
 
@@ -276,8 +287,28 @@ public:
         return true;
     }
 
+    bool operator!=(Array<T, Size> const &rhs) const {
+        return !(*this == rhs);
+    }
+
+    bool contains(T const &val) const {
+        for (size_t i = 0; i < Size; i++) {
+            if(m_data[i] == val) return true;
+        }
+        return false;
+    }
 };
 
+template<typename T, size_t Size>
+void print(Array<T, Size> const &arr) {
+    print("{");
+    for (size_t i = 0; i < Size; i++)
+    {
+        print(arr[i]);
+        if(i < Size - 1) print(", ");
+    }
+    print("}");
+}
 
 template<typename T>
 class ArrayIterator {

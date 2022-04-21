@@ -16,6 +16,8 @@
 #ifdef DEBUG
 #endif
 
+#include <Print.hpp>
+
 #include <stddef.h>
 #include <iostream>
 
@@ -124,7 +126,7 @@ public:
      * 
      * @param str 
      */
-    BasicString(std::string const &str)
+    BasicString(std::basic_string<CharType> const &str)
     {
         m_size = str.length();
         m_capacity = m_size + (BlockSize - m_size % BlockSize);
@@ -510,7 +512,7 @@ public:
         }
 
         for (size_t i = 0; i < str.size(); i++) {
-            m_data[i + m_size] = str[i];    
+            m_data[i + m_size] = str[i];
         }
 
         m_size += str.size();
@@ -572,7 +574,7 @@ public:
     BasicString span(size_t first, size_t last = BasicString::nPos) const {
         if(last < first) {
             BasicString res;
-            for (ConstReverseStringIterator<CharType> i = cbegin() + first - 1; i <= cbegin() + last; i++)
+            for (ConstReverseStringIterator<CharType> i = cbegin() + (first <= m_size ? first : m_size) - 1; i <= cbegin() + last; i++)
             {
                 res.append(*i);
             }
@@ -1341,12 +1343,13 @@ void memoryCopy(PointerContainerType *destination, PointerContainerType const *s
 }
 
 template<typename CharType, size_t BlockSize>
-std::ostream &operator<<(std::ostream &os, BasicString<CharType, BlockSize> const &str) {
-    return os << str.cString();
+void print(BasicString<CharType, BlockSize> const &str) {
+    std::cout << str.cString();
 }
 
 template<typename CharType, size_t BlockSize>
 std::istream &operator>>(std::istream &is, BasicString<CharType, BlockSize> &str) {
+    //FIXME:
     return is >> str.data();
 }
 
